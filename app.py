@@ -1,125 +1,155 @@
 import numpy as np
 from autogluon.tabular  import TabularDataset,TabularPredictor
 import pandas as pd
-from dash import Dash, dcc, html, Input, Output, callback
 
-predictor = TabularPredictor.load('AutogluonModels\\ag-20230626_042217')
-#命名id列和label列
-id, label = 'ID', 'OS'
+id, label = 'Patient ID', 'label'
 
-app = Dash(__name__)
+predictor = TabularPredictor.load('AutogluonModels\\model365')
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'None'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_1 = submission[1]
+submission_1 = submission_1.to_frame(name="None")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Partial or subtotal nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_2 = submission[1]
+submission_2 = submission_2.to_frame(name="Partial or subtotal nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Complete/total/simple nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_3 = submission[1]
+submission_3 = submission_3.to_frame(name="Complete/total/simple nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Radical nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_4 = submission[1]
+submission_4 = submission_4.to_frame(name="Radical nephrectomy")
+# 合并四个 submission DataFrame  
+combined_submission = pd.concat([submission_1, submission_2, submission_3, submission_3], axis=1)   
+combined_submission ['result'] = combined_submission.apply(lambda row: row.idxmin(), axis=1) 
+combined_submission.to_csv('submission.csv', index=False)  
 
-app.layout = html.Div([
-    html.Div(children=[
-        ], style={'padding': 10, 'flex': 1}),
-    html.Div(children=[
-    html.H6("Please fill in the patient's baseline information:"),
-    html.H6(" "),
-    html.H6(" "),
-    html.Div([
-        html.Label('MARITAL_STATUS'),
-        dcc.Dropdown(['Coupled', 'Single'], 'Single',id='MARITAL_STATUS'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('GENDER'),
-        dcc.Dropdown(['Female', 'Male'], 'Male',id='GENDER'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('AGE'),
-        dcc.Dropdown(['<50', '50–60', '60–70', '≥70'], '<50',id='AGE'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('NUMBER_OF_SITEMALIGNANT_TUMORS'),
-        dcc.Input(id='NUMBER_OF_SITEMALIGNANT_TUMORS', value='1', type='number')
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('grade'),
-        dcc.Dropdown(['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ'], 'Ⅰ',id='grade'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('stage'),
-        dcc.Dropdown(['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ'], 'Ⅰ',id='stage'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('Tstage'),
-        dcc.Dropdown(['T1', 'T2', 'T3', 'T4'], 'T1',id='Tstage'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('Nstage'),
-        dcc.Dropdown(['N0', 'N1', 'N2'], 'N0',id='Nstage'),
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('Mstage'),
-        dcc.Dropdown(['M0', 'M1'], 'M1',id='Mstage'),
-    ]),
-    ], style={'padding': 10, 'flex': 1}),
+predictor = TabularPredictor.load('AutogluonModels\\model1095')
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'None'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_1 = submission[1]
+submission_1 = submission_1.to_frame(name="None")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Partial or subtotal nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_2 = submission[1]
+submission_2 = submission_2.to_frame(name="Partial or subtotal nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Complete/total/simple nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_3 = submission[1]
+submission_3 = submission_3.to_frame(name="Complete/total/simple nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Radical nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_4 = submission[1]
+submission_4 = submission_4.to_frame(name="Radical nephrectomy")
+# 合并四个 submission DataFrame  
+combined_submission = pd.concat([submission_1, submission_2, submission_3, submission_3], axis=1)   
+combined_submission ['result'] = combined_submission.apply(lambda row: row.idxmin(), axis=1) 
+combined_submission.to_csv('submission.csv', index=False)  
 
-    html.Div(children=[
-    html.H6("Please fill in the surgical method and predicted survival time:"),
-    html.Div([
-        html.Label('surgery'),
-        dcc.Dropdown(['Complete/total nephrectomy', 'Partial/subtotal nephrectomy'], 'Complete/total nephrectomy',id='surgery'),  
-    ]),
-    html.H6(" "),
-    html.Div([
-        html.Label('Prepare the predicted survival time'),
-        dcc.Input(id='Prepare the predicted survival time', value='30', type='number')
-    ]),
+predictor = TabularPredictor.load('AutogluonModels\\model1825')
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'None'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_1 = submission[1]
+submission_1 = submission_1.to_frame(name="None")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Partial or subtotal nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_2 = submission[1]
+submission_2 = submission_2.to_frame(name="Partial or subtotal nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Complete/total/simple nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_3 = submission[1]
+submission_3 = submission_3.to_frame(name="Complete/total/simple nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Radical nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_4 = submission[1]
+submission_4 = submission_4.to_frame(name="Radical nephrectomy")
+# 合并四个 submission DataFrame  
+combined_submission = pd.concat([submission_1, submission_2, submission_3, submission_3], axis=1)   
+combined_submission ['result'] = combined_submission.apply(lambda row: row.idxmin(), axis=1) 
+combined_submission.to_csv('submission.csv', index=False)  
 
-    html.Br(),
-    html.H6("The probability of survival:"),
-    html.H6(""),
-    html.H6(""),
-    html.Div(id='my-output'),
-    ], style={'padding': 10, 'flex': 1}),
-    html.Div(children=[
-        ], style={'padding': 10, 'flex': 1})
-], style={'display': 'flex', 'flex-direction': 'row'})
+predictor = TabularPredictor.load('AutogluonModels\\model2555')
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'None'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_1 = submission[1]
+submission_1 = submission_1.to_frame(name="None")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Partial or subtotal nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_2 = submission[1]
+submission_2 = submission_2.to_frame(name="Partial or subtotal nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Complete/total/simple nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_3 = submission[1]
+submission_3 = submission_3.to_frame(name="Complete/total/simple nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Radical nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_4 = submission[1]
+submission_4 = submission_4.to_frame(name="Radical nephrectomy")
+# 合并四个 submission DataFrame  
+combined_submission = pd.concat([submission_1, submission_2, submission_3, submission_3], axis=1)   
+combined_submission ['result'] = combined_submission.apply(lambda row: row.idxmin(), axis=1) 
+combined_submission.to_csv('submission.csv', index=False)  
 
-
-@callback(
-    Output('my-output', 'children'),
-    Input('MARITAL_STATUS', 'value'),
-    Input('GENDER', 'value'),
-    Input('AGE', 'value'),
-    Input('NUMBER_OF_SITEMALIGNANT_TUMORS', 'value'),
-    Input('grade', 'value'),
-    Input('stage', 'value'),
-    Input('Tstage', 'value'),
-    Input('Nstage', 'value'),
-    Input('Mstage', 'value'),
-    Input('surgery', 'value'),
-    Input('Prepare the predicted survival time', 'value'))
-def update_output_div(APP2, APP3, 
-                      APP4, APP6, 
-                      APP7, APP8, 
-                      APP9, APP10, 
-                      APP11, APP5, 
-                      APP1):
-    test_csv=pd.read_csv('mod.csv')
-    test_csv.iloc[:,1]=APP1
-    test_csv.iloc[:,2]=APP2
-    test_csv.iloc[:,3]=APP3
-    test_csv.iloc[:,4]=APP4
-    test_csv.iloc[:,5]=APP5
-    test_csv.iloc[:,6]=APP6
-    test_csv.iloc[:,7]=APP7
-    test_csv.iloc[:,8]=APP8
-    test_csv.iloc[:,9]=APP9
-    test_csv.iloc[:,10]=APP10
-    test_csv.iloc[:,11]=APP11
-    output_value=predictor.predict_proba(test_csv.drop(columns=[id]))
-    output_value=output_value.loc[0,0]
-    return output_value
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
+predictor = TabularPredictor.load('AutogluonModels\\model3285')
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'None'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_1 = submission[1]
+submission_1 = submission_1.to_frame(name="None")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Partial or subtotal nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_2 = submission[1]
+submission_2 = submission_2.to_frame(name="Partial or subtotal nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Complete/total/simple nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_3 = submission[1]
+submission_3 = submission_3.to_frame(name="Complete/total/simple nephrectomy")
+test_csv=pd.read_csv('4.all.csv')
+test_csv['surg'] = 'Radical nephrectomy'
+preds=predictor.predict(test_csv.drop(columns=[id]))
+submission=predictor.predict_proba(test_csv.drop(columns=[id])) #输出概率
+submission_4 = submission[1]
+submission_4 = submission_4.to_frame(name="Radical nephrectomy")
+# 合并四个 submission DataFrame  
+combined_submission = pd.concat([submission_1, submission_2, submission_3, submission_3], axis=1)   
+combined_submission ['result'] = combined_submission.apply(lambda row: row.idxmin(), axis=1) 
+combined_submission.to_csv('submission.csv', index=False)  
